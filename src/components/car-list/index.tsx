@@ -20,7 +20,6 @@ const VehicleList = () => {
 
   useEffect(() => {
     try {
-      
       setVehicles(data.cars);
       setIsLoading(false);
     } catch (error) {
@@ -43,6 +42,8 @@ const VehicleList = () => {
       }, {})
     : {};
 
+  const sortedBrands = Object.keys(groupedVehicles).sort();
+
   if (isLoading) {
     return (
       <div className="text-center text-xl font-semibold">Carregando...</div>
@@ -51,19 +52,26 @@ const VehicleList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {Object.keys(groupedVehicles).map((brand) => (
+      {sortedBrands.map((brand) => (
         <div key={brand} className="mb-6">
-          <h2 className="text-2xl font-bold mb-4">{brand}</h2>
-          <ul className="space-y-2">
+          <h2 className="text-2xl font-bold mb-4">Marca: {brand}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {groupedVehicles[brand].map((vehicle) => (
-              <li
+              <div
                 key={vehicle.id}
-                className="p-4 border rounded-lg shadow hover:bg-gray-100 transition duration-200"
+                className="p-4 border bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
-                {vehicle.nome_modelo} - {vehicle.ano}
-              </li>
+                <h3 className="text-lg font-semibold">{vehicle.nome_modelo}</h3>
+                <p className="text-sm text-gray-600">Ano: {vehicle.ano}</p>
+                <p className="text-sm text-gray-600">
+                  Número de portas: {vehicle.num_portas}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Combustível: {vehicle.combustivel}
+                </p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       ))}
     </div>
