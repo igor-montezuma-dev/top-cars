@@ -143,9 +143,9 @@ export function Header() {
             </PopoverPanel>
           </Popover>
 
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Marketplace
-          </a>
+          <span className="text-sm font-semibold leading-6 text-gray-900">
+            <Link to={`/register`}>Registrar veículo</Link>
+          </span>
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
             Sobre nós
           </a>
@@ -213,12 +213,9 @@ export function Header() {
                   )}
                 </Disclosure>
 
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
+                <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                  <Link to={`/register`}>Registrar veículo</Link>
+                </span>
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
