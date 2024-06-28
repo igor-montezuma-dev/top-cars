@@ -1,5 +1,5 @@
+import VehicleList from "../../components/car-list";
 import { Container } from "../../components/container";
-import  VehicleList  from "../../components/car-list";
 
 export function Home() {
   return (
