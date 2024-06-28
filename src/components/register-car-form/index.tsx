@@ -23,6 +23,8 @@ interface VehicleFormProps {
   nextVehicleId: number;
 }
 
+
+
 const VehicleForm: React.FC<VehicleFormProps> = ({
   onAddVehicle,
   nextVehicleId,
@@ -50,7 +52,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const validatedVehicle = vehicleSchema.parse(newVehicle);
@@ -60,8 +62,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         timestamp_cadastro: Date.now(),
       } as Vehicle;
 
-      const storedVehicles = localStorage.getItem("vehicles");
-      const vehicles = storedVehicles ? JSON.parse(storedVehicles) : [];
+      const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
       vehicles.push(vehicleToAdd);
       localStorage.setItem("vehicles", JSON.stringify(vehicles));
 
@@ -84,6 +85,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     } catch (error) {
       if (error instanceof z.ZodError) {
         setValidationErrors(error.errors);
+      } else {
+        console.error("Erro ao processar formulário:", error);
+        toast.error("Ocorreu um erro ao processar o formulário.");
       }
     }
   };
@@ -95,7 +99,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   return (
     <>
-      <ToastContainer />
       <form
         onSubmit={handleSubmit}
         className="mb-8 p-6 border rounded-lg shadow-lg bg-white"
@@ -163,6 +166,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           Registrar Veículo
         </button>
       </form>
+      <ToastContainer />
     </>
   );
 };
