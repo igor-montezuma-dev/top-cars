@@ -2,7 +2,7 @@ import { Container } from "../../components/container";
 import VehicleForm from "../../components/register-car-form";
 
 export function Register() {
-  const onAddVehicle = (vehicle) => {};
+  const onAddVehicle = (vehicle: any) => {};
 
   const someNextVehicleId = 1;
 
