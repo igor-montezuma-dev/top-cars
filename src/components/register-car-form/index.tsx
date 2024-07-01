@@ -1,100 +1,131 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { z } from "zod";
-import vehicleSchema from "../../schemas/vehicle-schema";
+import { Car, Model } from "../../types/Car.type";
 import InputField from "../input-field";
 
-interface Vehicle {
-  id: number;
-  timestamp_cadastro: number;
-  modelo_id: number;
-  ano: number;
-  combustivel: string;
-  num_portas: number;
-  cor: string;
-  nome_modelo: string;
-  valor: number;
-  brand: string;
-}
-
 interface VehicleFormProps {
-  onAddVehicle: (vehicle: Vehicle) => void;
+  onAddVehicle: (car: Car) => void;
   nextVehicleId: number;
 }
-
-
 
 const VehicleForm: React.FC<VehicleFormProps> = ({
   onAddVehicle,
   nextVehicleId,
 }) => {
-  const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
+  const [newVehicle, setNewVehicle] = useState<Partial<Car>>({
     modelo_id: 0,
     ano: new Date().getFullYear(),
     combustivel: "",
-    num_portas: 4,
+    num_portas: 0,
     cor: "",
-    nome_modelo: "",
     valor: 0,
-    brand: "",
+    nome_modelo: "", // Incluir nome_modelo no estado
   });
-  const [validationErrors, setValidationErrors] = useState<z.ZodIssue[]>([]);
+  const [models, setModels] = useState<Model[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    fetchModels();
+  }, []);
+
+  const fetchModels = async () => {
+    try {
+      const response = await axios.get<Model[]>(
+        "https://top-cars-api.onrender.com/models"
+      );
+      setModels(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar modelos:", error);
+      toast.error("Erro ao carregar os modelos.");
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
-    setNewVehicle((prevState) => ({
-      ...prevState,
-      [name]:
-        name === "valor" || name === "num_portas" || name === "ano"
-          ? parseInt(value, 10)
-          : value,
-    }));
+    if (name === "modelo_id") {
+      const selectedModel = models.find(
+        (model) => model.id === parseInt(value, 10)
+      );
+      if (selectedModel) {
+        setNewVehicle((prevState) => ({
+          ...prevState,
+          modelo_id: selectedModel.id,
+          nome_modelo: selectedModel.nome,
+        }));
+      }
+    } else {
+      setNewVehicle((prevState) => ({
+        ...prevState,
+        [name]:
+          name === "valor" || name === "num_portas" || name === "ano"
+            ? parseInt(value, 10)
+            : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
-      const validatedVehicle = vehicleSchema.parse(newVehicle);
-      const vehicleToAdd = {
-        ...validatedVehicle,
+      const vehicleToAdd: Car = {
+        modelo_id: newVehicle.modelo_id || 0,
+        nome_modelo: newVehicle.nome_modelo || "",
+        cor: newVehicle.cor || "",
+        ano: newVehicle.ano || new Date().getFullYear(),
+        valor: newVehicle.valor || 0,
+        combustivel: newVehicle.combustivel || "",
+        num_portas: newVehicle.num_portas || 0,
         id: nextVehicleId,
         timestamp_cadastro: Date.now(),
-      } as Vehicle;
+      };
 
-      const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
-      vehicles.push(vehicleToAdd);
-      localStorage.setItem("vehicles", JSON.stringify(vehicles));
-
+      await sendToApi(vehicleToAdd);
       onAddVehicle(vehicleToAdd);
-
-      setNewVehicle({
-        modelo_id: 0,
-        ano: new Date().getFullYear(),
-        combustivel: "",
-        num_portas: 4,
-        cor: "",
-        nome_modelo: "",
-        valor: 0,
-        brand: "",
-      });
-
+      resetForm();
       toast.success("Veículo cadastrado com sucesso!");
-
-      setValidationErrors([]);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        setValidationErrors(error.errors);
-      } else {
-        console.error("Erro ao processar formulário:", error);
-        toast.error("Ocorreu um erro ao processar o formulário.");
-      }
+      console.error("Erro ao processar formulário:", error);
+      toast.error("Erro ao processar formulário");
     }
   };
 
-  const getErrorMessage = (field: string) => {
-    const error = validationErrors.find((err) => err.path.includes(field));
-    return error ? error.message : null;
+  const sendToApi = async (car: Car) => {
+    try {
+      const formattedCar = {
+        modeloId: car.modelo_id,
+        nomeModelo: car.nome_modelo,
+        cor: car.cor,
+        ano: car.ano,
+        valor: car.valor,
+        combustivel: car.combustivel,
+        numPortas: car.num_portas,
+      };
+
+      const response = await axios.post(
+        "https://top-cars-api.onrender.com/cars",
+        formattedCar
+      );
+      console.log("Resposta da API:", response.data);
+    } catch (error) {
+      console.error("Erro ao enviar para a API:", error);
+      throw new Error("Erro ao enviar para a API.");
+    }
+  };
+
+  const resetForm = () => {
+    setNewVehicle({
+      modelo_id: 0,
+      ano: new Date().getFullYear(),
+      combustivel: "",
+      num_portas: 0,
+      cor: "",
+      valor: 0,
+      nome_modelo: "",
+    });
   };
 
   return (
@@ -103,21 +134,33 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         onSubmit={handleSubmit}
         className="mb-8 p-6 border rounded-lg shadow-lg bg-white"
       >
-        <InputField
-          label="Marca"
-          name="brand"
-          type="text"
-          value={newVehicle.brand || ""}
-          onChange={handleChange}
-          errorMessage={getErrorMessage("brand")}
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Modelo
+          </label>
+          <select
+            name="modelo_id"
+            value={newVehicle.modelo_id || ""}
+            onChange={handleChange}
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          >
+            <option value="">Selecione um modelo</option>
+            {models.map((model) => (
+              <option key={model.id} value={model.id}>
+                {model.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <InputField
           label="Valor"
           name="valor"
           type="number"
           value={newVehicle.valor || ""}
           onChange={handleChange}
-          errorMessage={getErrorMessage("valor")}
+          required
         />
         <InputField
           label="Combustível"
@@ -125,7 +168,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           type="text"
           value={newVehicle.combustivel || ""}
           onChange={handleChange}
-          errorMessage={getErrorMessage("combustivel")}
+          required
         />
         <InputField
           label="Cor"
@@ -133,7 +176,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           type="text"
           value={newVehicle.cor || ""}
           onChange={handleChange}
-          errorMessage={getErrorMessage("cor")}
+          required
         />
         <InputField
           label="Número de portas"
@@ -141,7 +184,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           type="number"
           value={newVehicle.num_portas || ""}
           onChange={handleChange}
-          errorMessage={getErrorMessage("num_portas")}
+          required
         />
         <InputField
           label="Ano"
@@ -149,16 +192,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           type="number"
           value={newVehicle.ano || ""}
           onChange={handleChange}
-          errorMessage={getErrorMessage("ano")}
+          required
         />
-        <InputField
-          label="Modelo"
-          name="nome_modelo"
-          type="text"
-          value={newVehicle.nome_modelo || ""}
-          onChange={handleChange}
-          errorMessage={getErrorMessage("nome_modelo")}
-        />
+
         <button
           type="submit"
           className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
