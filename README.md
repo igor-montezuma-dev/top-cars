@@ -1,30 +1,39 @@
-# React + TypeScript + Vite
+# Top Cars
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta aplicação é uma interface de usuário construída com React que permite aos usuários visualizar uma lista de veículos e seus preços formatados em reais (BRL).
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Gerenciamento de Carros**: A aplicação permite que os usuários criem, leiam, atualizem e excluam carros. Cada carro tem um modelo, marca, ano de fabricação, cor e preço.
 
-## Expanding the ESLint configuration
+- **Gerenciamento de Marcas**: Os usuários podem criar, ler, atualizar e excluir marcas de carros. Cada marca tem um nome e uma lista de modelos associados.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Gerenciamento de Modelos**: Os usuários podem criar, ler, atualizar e excluir modelos de carros. Cada modelo pertence a uma marca e tem um nome.
 
-- Configure the top-level `parserOptions` property like this:
+- **Busca de Carros**: Os usuários podem buscar carros por marca, modelo, ano de fabricação, cor e preço.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Tecnologias Utilizadas
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- React
+- TypeScript
+- Vite
+  
+## Pré-requisitos
+
+- node 18 ou superior
+
+## Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/sua-feature`)
+3. Commite suas alterações (`git commit -m 'Adiciona sua feature'`)
+4. Faça um push para a branch (`git push origin feature/sua-feature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+Feito por [Igor Montezuma](https://github.com/igor-montezuma-dev)
