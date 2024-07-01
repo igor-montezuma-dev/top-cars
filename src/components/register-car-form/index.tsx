@@ -81,6 +81,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         num_portas: newVehicle.num_portas || 0,
         id: nextVehicleId,
         timestamp_cadastro: Date.now(),
+      
       };
 
       await sendToApi(vehicleToAdd);
@@ -161,6 +162,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           value={newVehicle.valor || ""}
           onChange={handleChange}
           required
+          errorMessage={null}
         />
         <InputField
           label="Combustível"
@@ -169,6 +171,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           value={newVehicle.combustivel || ""}
           onChange={handleChange}
           required
+          errorMessage={null}
         />
         <InputField
           label="Cor"
@@ -177,6 +180,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           value={newVehicle.cor || ""}
           onChange={handleChange}
           required
+          errorMessage={null}
         />
         <InputField
           label="Número de portas"
@@ -185,6 +189,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           value={newVehicle.num_portas || ""}
           onChange={handleChange}
           required
+          errorMessage={null}
         />
         <InputField
           label="Ano"
@@ -193,6 +198,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           value={newVehicle.ano || ""}
           onChange={handleChange}
           required
+          errorMessage={null}
         />
 
         <button

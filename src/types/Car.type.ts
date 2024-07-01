@@ -1,4 +1,6 @@
 export interface Car {
+  modelo_id: any;
+  nome_modelo: any;
   id: number;
   timestamp_cadastro: number;
   ano: number;
@@ -6,7 +8,7 @@ export interface Car {
   num_portas: number;
   cor: string;
   valor: number;
-  model: Model;
+  //: Model;
 }
 
 export interface Model {
