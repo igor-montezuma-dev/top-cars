@@ -21,4 +21,4 @@ export interface Model {
 export interface Brand {
   marca_id: number;
   nome_marca: string;
-}W
+}
