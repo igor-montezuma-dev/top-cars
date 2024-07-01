@@ -78,15 +78,35 @@ const VehicleList = () => {
             {groupedVehicles[brandName].map((vehicle) => (
               <div
                 key={vehicle.id}
-                className="p-4 border bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                className="flex flex-col p-4 border bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
-                <h3 className="text-lg font-semibold">{vehicle.nome_modelo}</h3>
-                <p className="text-sm text-gray-600">Ano: {vehicle.ano}</p>
-                <p className="text-sm text-gray-600">
-                  Número de portas: {vehicle.num_portas}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Combustível: {vehicle.combustivel}
+                <h3 className="text-lg font-bold mb-2">
+                  {vehicle.nome_modelo}
+                </h3>
+                <div className="flex-grow">
+                  <p className="text-lg text-gray-600 mb-1">
+                    <span className="font-bold">Ano:</span> {vehicle.ano}
+                  </p>
+                  <p className="text-lg text-gray-600 mb-1">
+                    <span className="font-bold mr-1">Número de portas:</span>
+                    {vehicle.num_portas}
+                  </p>
+                  <p className="text-lg text-gray-600 mb-1">
+                    <span className="font-bold mr-1">Combustível:</span>
+
+                    {vehicle.combustivel}
+                  </p>
+                  <p className="text-lg text-gray-600 mb-1">
+                    <span className="font-bold mr-1">Cor:</span>
+                    {vehicle.cor}
+                  </p>
+                </div>
+                <p className="text-lg font-bold mt-2">
+                <span className="font-bold mr-1">Valor:</span>
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(vehicle.valor)}
                 </p>
               </div>
             ))}
